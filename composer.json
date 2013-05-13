@@ -1,0 +1,31 @@
+{
+    "name": "syseleven/mite-eleven",
+    "description": "SysEleven Mite Connector",
+    "homepage": "http://symfony.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Markus Seifert",
+            "email": "m.seifert@syseleven.de"
+        }
+    ],
+    "autoload": {
+        "psr-0": { "SysEleven\\MiteEleven": "src/" }
+    },
+    "require": {
+        "php": ">=5.3.19",
+        "zendframework/zend-http": "2.0.*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "3.7.*",
+        "mockery/mockery": "dev-master"
+    },
+    "target-dir": "SysEleven/MiteEleven",
+    "minimum-stability": "alpha",
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://packages.zendframework.com/"
+        }
+    ]
+}
