@@ -11,13 +11,13 @@ Requirements
 
 The requirements are pretty basic:
 
-    > php >= 5.3.19 or php >= 5.4.8 there is a bug in prior version of which prevented FILTER_VALIDATE_BOOLEAN to validate "false" correctly
-    > Zend\Http (will be automatically installed if using composer)
+    - php >= 5.3.19 or php >= 5.4.8 there is a bug in prior version of which prevented FILTER_VALIDATE_BOOLEAN to validate "false" correctly
+    - Zend\Http (will be automatically installed if using composer)
 
 and for development or if you want to run the tests:
 
-    > mockery/mockery (will be automatically installed using composer)
-    > phpunit >= 3.6
+    - mockery/mockery
+    - phpunit >= 3.6
 
 Installation
 ------------
@@ -26,10 +26,10 @@ The recommended way to install is using composer, you can obtain the latest vers
 
 Simply add MiteEleven to your requirements and specify the repository as follows:
 
-    ```json
+    ``json
      {
         "require": {
-            "syseleven/mite-eleven": "dev-master",
+            "syseleven/mite-eleven": "dev-master"
         },
         "repositories": [
                 {
@@ -38,30 +38,24 @@ Simply add MiteEleven to your requirements and specify the repository as follows
                 }
         ]
      }
-    ```
+    ``
 
 Then run composer to update your dependencies:
 
-    ```bash
+    ``bash
      $ php composer.phar update
-     ```
-or if you want run the tests:
-
-     ```
-     $ php composer.phar update --dev
-     ```
+     ``
 
 If you don't want to use composer simply clone the repository to a location of your choice
 
-    ```bash
+    ``bash
     $ git clone https://github.com/syseleven/mite-eleven.git
-    ```
-
+    ``
 
 Usage
 -----
 
-    ```php
+    ``php
     use SysEleven\MiteEleven\MiteClient;
     use SysEleven\MiteEleven\RestClient;
 
@@ -84,7 +78,7 @@ Usage
     // Then find more out about yourself
     var_dump($mite->getMyself());
 
-    ```
+    ``
 
 
 
