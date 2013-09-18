@@ -20,7 +20,6 @@
         "phpunit/phpunit": "3.7.*",
         "mockery/mockery": "dev-master"
     },
-    "target-dir": "SysEleven/MiteEleven",
     "minimum-stability": "alpha",
     "repositories": [
         {
