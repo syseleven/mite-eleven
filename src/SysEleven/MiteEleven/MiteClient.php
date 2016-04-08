@@ -26,14 +26,14 @@ use Zend\Http\Request;
 use Zend\Http\Response;
 use SysEleven\MiteEleven\RestClientInterface;
 
- 
+
 /**
  * Implementation of a simple interface to the mite time tracking api.
  *
  * @author M. Seifert <m.seifert@syseleven.de
  * @version 0.9.1
  * @package SysEleven\MiteEleven
- */ 
+ */
 class MiteClient implements MiteInterface
 {
 
@@ -472,7 +472,7 @@ class MiteClient implements MiteInterface
      * @throws \Exception
      * @link http://mite.yo.lk/api/kunden.html
      */
-    public function updateCustomer($id, array $options = array()) 
+    public function updateCustomer($id, array $options = array())
     {
         if (!filter_var($id, FILTER_VALIDATE_INT, array('options' => array('min_range' => 0)))) {
             throw new \BadMethodCallException('ID must be a positive integer got: '.$id);
@@ -604,16 +604,20 @@ class MiteClient implements MiteInterface
      * @param string $name
      * @param int    $limit
      * @param int    $page page to access, if not used in conjunction with limit a \BadMethodCallException is thrown
+     * @param int    $customerId
      *
      * @return array
      * @throws \BadMethodCallException
      * @link http://mite.yo.lk/api/projekte.html
      */
-    public function listProjects($name = null, $limit = null, $page = null)
+    public function listProjects($name = null, $limit = null, $page = null, $customerId = null)
     {
         $params = array();
         if (!is_null($name)) {
             $params['name'] = $name;
+        }
+        if (!is_null($customerId)) {
+            $params['customer_id'] = $customerId;
         }
 
         $limit = $this->prepareLimit($limit, $page);
@@ -625,19 +629,22 @@ class MiteClient implements MiteInterface
     /**
      * Returns a list of archived projects optionally filtered by $name.
      *
-     * @param      $name
-     *
-     * @param int $limit
-     * @param int $page
+     * @param string $name
+     * @param int    $limit
+     * @param int    $page
+     * @param int    $customerId
      *
      * @return array
      * @link http://mite.yo.lk/api/projekte.html
      */
-    public function listArchivedProjects($name = null, $limit = null, $page = null)
+    public function listArchivedProjects($name = null, $limit = null, $page = null, $customerId = null)
     {
         $params = array();
         if (!is_null($name)) {
             $params['name'] = $name;
+        }
+        if (!is_null($customerId)) {
+            $params['customer_id'] = $customerId;
         }
 
         $limit = $this->prepareLimit($limit, $page);
