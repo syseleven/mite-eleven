@@ -12,6 +12,10 @@
  */
 namespace SysEleven\MiteEleven;
 
+use BadMethodCallException;
+use DateTime;
+use Exception;
+use RuntimeException;
 use SysEleven\MiteEleven\MiteInterface;
 use SysEleven\MiteEleven\Exceptions\CustomerNotFoundException;
 use SysEleven\MiteEleven\Exceptions\EntryNotFoundException;
@@ -90,7 +94,7 @@ class MiteClient implements MiteInterface
      * @param int   $page
      * @param bool  $strict if true, every unknown or empty filter|group element will result in a BadMethodCallException
      *
-     * @throws \BadMethodCallException
+     * @throws BadMethodCallException
      * @return array
      * @link http://mite.yo.lk/api/gruppierte-zeiten.html
      * @link http://mite.yo.lk/api/zeiten.html
@@ -123,18 +127,18 @@ class MiteClient implements MiteInterface
      *
      * @param int $id
      *
-     * @throws \SysEleven\MiteEleven\Exceptions\MiteRuntimeException
-     * @throws \SysEleven\MiteEleven\Exceptions\EntryNotFoundException
-     * @throws \SysEleven\MiteEleven\Exceptions\ApiNotAvailableException
-     * @throws \BadMethodCallException
-     * @throws \Exception
      * @return array
+     * @throws EntryNotFoundException
+     * @throws \SysEleven\MiteEleven\Exceptions\ApiNotAvailableException
+     * @throws BadMethodCallException
+     * @throws Exception
+     * @throws MiteRuntimeException
      * @link http://mite.yo.lk/api/zeiten.html
      */
     public function getEntry($id)
     {
         if (!filter_var($id, FILTER_VALIDATE_INT, array('options' => array('min_range' => 0)))) {
-            throw new \BadMethodCallException('ID must be a positive integer got: '.$id);
+            throw new BadMethodCallException('ID must be a positive integer got: '.$id);
         }
 
         try {
@@ -151,8 +155,8 @@ class MiteClient implements MiteInterface
 
             return $res['time_entry'];
 
-        } catch (\Exception $re) {
-            if (404 == $re->getCode()) {
+        } catch (Exception $re) {
+            if (404 === (int) $re->getCode()) {
                 throw new EntryNotFoundException('Cannot find entry: '.$id, 404);
             }
 
@@ -164,7 +168,7 @@ class MiteClient implements MiteInterface
      * Creates a new entry, all parameters are optional.
      *
      * @param string[] $data {
-     *      @type \DateTime $date_at    Optional defaults to now
+     *      @type DateTime $date_at    Optional defaults to now
      *      @type int       $minutes    Optional defaults to 0
      *      @type string    $note       Optional defaults to ''
      *      @type int       $user_id    Can only be set vy the owner or an Administrator
@@ -175,7 +179,7 @@ class MiteClient implements MiteInterface
      *
      * @return array
      *
-     * @throws \SysEleven\MiteEleven\Exceptions\MiteRuntimeException
+     * @throws MiteRuntimeException
      * @link http://mite.yo.lk/api/zeiten.html
      */
     public function createEntry(array $data = array())
@@ -190,7 +194,7 @@ class MiteClient implements MiteInterface
      *
      * @param int       $id
      * @param string[] $data {
-     *      @type \DateTime $date_at    Optional defaults to now
+     *      @type DateTime $date_at    Optional defaults to now
      *      @type int       $minutes    Optional defaults to 0
      *      @type string    $note       Optional defaults to ''
      *      @type int       $user_id    Can only be set vy the owner or an Administrator
@@ -202,16 +206,16 @@ class MiteClient implements MiteInterface
      *
      * @return bool
      *
-     * @throws \BadMethodCallException
-     * @throws \SysEleven\MiteEleven\Exceptions\MiteRuntimeException
-     * @throws \SysEleven\MiteEleven\Exceptions\EntryNotFoundException
-     * @throws \Exception
+     * @throws BadMethodCallException
+     * @throws MiteRuntimeException
+     * @throws EntryNotFoundException
+     * @throws Exception
      * @link http://mite.yo.lk/api/zeiten.html
      */
     public function updateEntry($id, array $data = array(), $force = false)
     {
         if (!filter_var($id, FILTER_VALIDATE_INT, array('options' => array('min_range' => 0)))) {
-            throw new \BadMethodCallException('ID must be a positive integer got: '.$id);
+            throw new BadMethodCallException('ID must be a positive integer got: '.$id);
         }
 
         try {
@@ -222,8 +226,8 @@ class MiteClient implements MiteInterface
 
             return $this->callApi('PUT', '/time_entries/'.$id.'.json', $params);
 
-        } catch (\Exception $e) {
-            if (404 == $e->getCode()) {
+        } catch (Exception $e) {
+            if (404 === (int) $e->getCode()) {
                 throw new EntryNotFoundException('Cannot find entry: '.$id, 404);
             }
 
@@ -257,16 +261,16 @@ class MiteClient implements MiteInterface
                 continue;
             }
 
-            if ($k == 'locked') {
+            if ($k === 'locked') {
                 if (null === ($locked = filter_var($v, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE))) {
                     continue;
                 }
                 $v = (false === $locked)? 'false':'true';
             }
 
-            if ($v instanceof \DateTime ) {
+            if ($v instanceof DateTime ) {
                 /**
-                 * @type \DateTime $v
+                 * @type DateTime $v
                  */
                 $v = (string) $v->format('Y-m-d');
             }
@@ -283,16 +287,16 @@ class MiteClient implements MiteInterface
      * @param int  $id
      *
      * @return boolean
-     * @throws \BadMethodCallException
-     * @throws \SysEleven\MiteEleven\Exceptions\MiteRuntimeException
-     * @throws \SysEleven\MiteEleven\Exceptions\EntryNotFoundException
-     * @throws \Exception
+     * @throws BadMethodCallException
+     * @throws MiteRuntimeException
+     * @throws EntryNotFoundException
+     * @throws Exception
      * @link http://mite.yo.lk/api/zeiten.html
      */
     public function deleteEntry($id)
     {
         if(false === filter_var($id, FILTER_VALIDATE_INT, array('options' => array('min_range' => 0)))) {
-            throw new \BadMethodCallException('ID must be a positive integer got: '.$id);
+            throw new BadMethodCallException('ID must be a positive integer got: '.$id);
         }
 
         try {
@@ -302,8 +306,8 @@ class MiteClient implements MiteInterface
                 '/time_entries/'.$id.'.json',
                 $params);
 
-        } catch (\Exception $e) {
-            if (404 == $e->getCode()) {
+        } catch (Exception $e) {
+            if (404 === (int) $e->getCode()) {
                 throw new EntryNotFoundException('Cannot find entry: '.$id, 404);
             }
 
@@ -366,12 +370,12 @@ class MiteClient implements MiteInterface
      * @param $name
      *
      * @return array
-     * @throws \BadMethodCallException
+     * @throws BadMethodCallException
      */
     public function searchCustomers($name)
     {
         if (2 > strlen($name)) {
-            throw new \BadMethodCallException('The search term ust be at least 2 characters long');
+            throw new BadMethodCallException('The search term ust be at least 2 characters long');
         }
 
         $active = $this->listCustomers($name);
@@ -386,16 +390,16 @@ class MiteClient implements MiteInterface
      *
      * @param $id
      *
-     * @throws \BadMethodCallException
+     * @throws BadMethodCallException
      * @throws Exceptions\CustomerNotFoundException
-     * @throws \Exception
+     * @throws Exception
      * @return array
      * @link http://mite.yo.lk/api/kunden.html
      */
     public function getCustomer($id)
     {
         if (!filter_var($id, FILTER_VALIDATE_INT, array('options' => array('min_range' => 0)))) {
-            throw new \BadMethodCallException('ID must be a positive integer got: '.$id);
+            throw new BadMethodCallException('ID must be a positive integer got: '.$id);
         }
 
         try {
@@ -412,8 +416,8 @@ class MiteClient implements MiteInterface
 
             return $res['customer'];
 
-        } catch (\Exception $re) {
-            if (404 == $re->getCode()) {
+        } catch (Exception $re) {
+            if (404 === (int) $re->getCode()) {
                 throw new CustomerNotFoundException('Cannot find entry: '.$id, 404);
             }
 
@@ -434,14 +438,14 @@ class MiteClient implements MiteInterface
      *      @type string $active_hourly_rate       one of nil|hourly_rate|hourly_rate_per_service
      * }
      * @return array
-     * @throws \BadMethodCallException
-     * @throws \SysEleven\MiteEleven\Exceptions\MiteRuntimeException
+     * @throws BadMethodCallException
+     * @throws MiteRuntimeException
      * @link http://mite.yo.lk/api/kunden.html
      */
     public function createCustomer($name, array $options = array())
     {
-        if (is_null($name) || !is_string($name) || 0 == strlen($name)) {
-            throw new \BadMethodCallException('Name: you must provide a valid name for the customer got: '.$name);
+        if (!is_string($name) || $name === '') {
+            throw new BadMethodCallException('Name: you must provide a valid name for the customer got: '.$name);
         }
 
         $options['name'] = $name;
@@ -466,24 +470,24 @@ class MiteClient implements MiteInterface
      * }
      *
      * @return bool
-     * @throws \SysEleven\MiteEleven\Exceptions\MiteRuntimeException
-     * @throws \BadMethodCallException
-     * @throws \SysEleven\MiteEleven\Exceptions\CustomerNotFoundException
-     * @throws \Exception
+     * @throws MiteRuntimeException
+     * @throws BadMethodCallException
+     * @throws CustomerNotFoundException
+     * @throws Exception
      * @link http://mite.yo.lk/api/kunden.html
      */
     public function updateCustomer($id, array $options = array())
     {
         if (!filter_var($id, FILTER_VALIDATE_INT, array('options' => array('min_range' => 0)))) {
-            throw new \BadMethodCallException('ID must be a positive integer got: '.$id);
+            throw new BadMethodCallException('ID must be a positive integer got: '.$id);
         }
 
         try {
             $params = $this->prepareCustomerData($options);
             return $this->callApi('PUT', '/customers/'.$id.'.json', $params);
 
-        } catch (\Exception $re) {
-            if (404 == $re->getCode()) {
+        } catch (Exception $re) {
+            if (404 === (int) $re->getCode()) {
                 throw new CustomerNotFoundException('Cannot find entry: '.$id, 404);
             }
 
@@ -497,7 +501,7 @@ class MiteClient implements MiteInterface
      * @param array $data
      *
      * @return array
-     * @throws \BadMethodCallException
+     * @throws BadMethodCallException
      */
     public function prepareCustomerData(array $data = array())
     {
@@ -506,7 +510,7 @@ class MiteClient implements MiteInterface
                            'hourly_rates_per_service', 'active_hourly_rate', 'name');
 
         foreach ($data AS $k => $v) {
-            if(!in_array($k, $supported)) {
+            if(!in_array($k, $supported, true)) {
                 continue;
             }
 
@@ -514,41 +518,41 @@ class MiteClient implements MiteInterface
                 continue;
             }
 
-            if ($k == 'name') {
-                if (0 == strlen($v)) {
-                    throw new \BadMethodCallException('Name: expected string with len >= 0');
+            if ($k === 'name') {
+                if ($v == '') {
+                    throw new BadMethodCallException('Name: expected string with len >= 0');
                 }
                 $params['name'] = $v;
                 continue;
             }
 
-            if ($k == 'hourly_rates_per_service') {
+            if ($k === 'hourly_rates_per_service') {
                 if (!is_array($v)) {
-                    throw new \BadMethodCallException('Hourly Rates Per Service: expected array with count >= 0 got: '.$v);
+                    throw new BadMethodCallException('Hourly Rates Per Service: expected array with count >= 0 got: '.$v);
                 }
 
                 $params['hourly_rates_per_service'] = $v;
                 continue;
             }
 
-            if ($k == 'hourly_rate') {
+            if ($k === 'hourly_rate') {
                 if (false === filter_var($v, FILTER_VALIDATE_INT, array('options' => array('min_range' => 0)))) {
-                    throw new \BadMethodCallException('Hourly Rate: expected int >= 0 got: '.$v);
+                    throw new BadMethodCallException('Hourly Rate: expected int >= 0 got: '.$v);
                 }
                 $params['hourly_rate'] = $v;
                 continue;
             }
 
-            if ($k == 'active_hourly_rate') {
-                if (!in_array($v, array('hourly_rate', 'hourly_rate_per_service'))) {
-                    throw new \BadMethodCallException('Active hourly rate: expected one of "hourly_rate", "hourly_rates_per_service" got: '.$v);
+            if ($k === 'active_hourly_rate') {
+                if (!in_array($v, array('hourly_rate', 'hourly_rates_per_service'))) {
+                    throw new BadMethodCallException('Active hourly rate: expected one of "hourly_rate", "hourly_rates_per_service" got: '.$v);
                 }
 
                 $params['active_hourly_rate'] = $v;
                 continue;
             }
 
-            if ($k == 'archived') {
+            if ($k === 'archived') {
                 if (null !== ($archived = filter_var($v, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE))) {
                     $params['archived'] = (false === $archived)? 'false':'true';
                 }
@@ -567,16 +571,16 @@ class MiteClient implements MiteInterface
      *
      * @param int $id
      *
-     * @throws \BadMethodCallException
+     * @throws BadMethodCallException
      * @throws Exceptions\CustomerNotFoundException
-     * @throws \Exception
+     * @throws Exception
      * @return bool
      * @link http://mite.yo.lk/api/kunden.html
      */
     public function deleteCustomer($id)
     {
         if (!filter_var($id, FILTER_VALIDATE_INT, array('options' => array('min_range' => 0)))) {
-            throw new \BadMethodCallException('ID must be a positive integer got: '.$id);
+            throw new BadMethodCallException('ID must be a positive integer got: '.$id);
         }
 
         try {
@@ -587,8 +591,8 @@ class MiteClient implements MiteInterface
 
             return $this->callApi($method, $url, $params);
 
-        } catch (\Exception $re) {
-            if (404 == $re->getCode()) {
+        } catch (Exception $re) {
+            if (404 === (int) $re->getCode()) {
                 throw new CustomerNotFoundException('Cannot find entry: '.$id, 404);
             }
 
@@ -607,7 +611,7 @@ class MiteClient implements MiteInterface
      * @param int    $customerId
      *
      * @return array
-     * @throws \BadMethodCallException
+     * @throws BadMethodCallException
      * @link http://mite.yo.lk/api/projekte.html
      */
     public function listProjects($name = null, $limit = null, $page = null, $customerId = null)
@@ -660,12 +664,12 @@ class MiteClient implements MiteInterface
      * @param $name
      *
      * @return array
-     * @throws \BadMethodCallException
+     * @throws BadMethodCallException
      */
     public function searchProjects($name)
     {
         if (2 > strlen($name)) {
-            throw new \BadMethodCallException('The search term ust be at least 2 characters long');
+            throw new BadMethodCallException('The search term ust be at least 2 characters long');
         }
 
         $active = $this->listProjects($name);
@@ -680,15 +684,15 @@ class MiteClient implements MiteInterface
      * @param int $id
      *
      * @throws Exceptions\ProjectNotFoundException
-     * @throws \BadMethodCallException
-     * @throws \Exception
+     * @throws BadMethodCallException
+     * @throws Exception
      * @return array
      * @link http://mite.yo.lk/api/projekte.html
      */
     public function getProject($id)
     {
         if (!filter_var($id, FILTER_VALIDATE_INT, array('options' => array('min_range' => 0)))) {
-            throw new \BadMethodCallException('ID must be a positive integer got: '.$id);
+            throw new BadMethodCallException('ID must be a positive integer got: '.$id);
         }
 
         try {
@@ -705,8 +709,8 @@ class MiteClient implements MiteInterface
 
             return $res['project'];
 
-        } catch (\Exception $re) {
-            if (404 == $re->getCode()) {
+        } catch (Exception $re) {
+            if (404 === (int) $re->getCode()) {
                 throw new ProjectNotFoundException('Cannot find entry: '.$id, 404);
             }
 
@@ -729,13 +733,13 @@ class MiteClient implements MiteInterface
      *      @type string $active_hourly_rate
      * }
      * @return string[]
-     * @throws \BadMethodCallException
+     * @throws BadMethodCallException
      * @link http://mite.yo.lk/api/projekte.html
      */
     public function createProject($name, array $options = array())
     {
-        if (0 == strlen($name)) {
-            throw new \BadMethodCallException('You must provide a name for the project');
+        if ($name === '') {
+            throw new BadMethodCallException('You must provide a name for the project');
         }
 
         $options['name'] = $name;
@@ -764,16 +768,16 @@ class MiteClient implements MiteInterface
      * }
      *
      * @return bool
-     * @throws \BadMethodCallException
-     * @throws \SysEleven\MiteEleven\Exceptions\ProjectNotFoundException
-     * @throws \RuntimeException
-     * @throws \Exception
+     * @throws BadMethodCallException
+     * @throws ProjectNotFoundException
+     * @throws RuntimeException
+     * @throws Exception
      * @link http://mite.yo.lk/api/projekte.html
      */
     public function updateProject($id, array $options = array())
     {
         if (!filter_var($id, FILTER_VALIDATE_INT, array('options' => array('min_range' => 0)))) {
-            throw new \BadMethodCallException('ID must be a positive integer got: '.$id);
+            throw new BadMethodCallException('ID must be a positive integer got: '.$id);
         }
 
         try {
@@ -782,8 +786,8 @@ class MiteClient implements MiteInterface
 
             return $this->callApi('PUT', '/projects/'.$id.'.json', $params);
 
-        } catch (\Exception $re) {
-            if (404 == $re->getCode()) {
+        } catch (Exception $re) {
+            if (404 === (int) $re->getCode()) {
                 throw new ProjectNotFoundException('Cannot find entry: '.$id, 404);
             }
 
@@ -807,7 +811,7 @@ class MiteClient implements MiteInterface
      *      @type boolean $update_hourly_rate_on_time_entries
      * }
      *
-     * @throws \BadMethodCallException
+     * @throws BadMethodCallException
      * @return array
      */
     public function prepareProjectData(array $data = array())
@@ -820,7 +824,7 @@ class MiteClient implements MiteInterface
                            'name', 'update_hourly_rate_on_time_entries');
 
         foreach ($data AS $k => $v) {
-            if(!in_array($k, $supported)) {
+            if(!in_array($k, $supported, true)) {
                 continue;
             }
 
@@ -828,57 +832,57 @@ class MiteClient implements MiteInterface
                 continue;
             }
 
-            if ($k == 'name') {
-                if (0 == strlen($v)) {
-                    throw new \BadMethodCallException('Name: You must provide a name for the project');
+            if ($k === 'name') {
+                if ($v === '') {
+                    throw new BadMethodCallException('Name: You must provide a name for the project');
                 }
                 $params['name'] = $v;
                 continue;
             }
 
-            if ($k == 'budget') {
-                if (null == ($budget = filter_var($v, FILTER_VALIDATE_INT, array('options' => array('min_range' => 0))))) {
-                    throw new \BadMethodCallException('Budget: expected positive integer >= 0 got: '.$v);
+            if ($k === 'budget') {
+                if (null === ($budget = filter_var($v, FILTER_VALIDATE_INT, array('options' => array('min_range' => 0))))) {
+                    throw new BadMethodCallException('Budget: expected positive integer >= 0 got: '.$v);
                 }
                 $params['budget'] = $budget;
                 continue;
             }
 
-            if ($k == 'budget_type') {
+            if ($k === 'budget_type') {
                 if (!in_array($v, array('minutes', 'cent'))) {
-                    throw new \BadMethodCallException('Budget type: expected one of (minutes|cent) got: '.$v);
+                    throw new BadMethodCallException('Budget type: expected one of (minutes|cent) got: '.$v);
                 }
                 $params['budget_type'] = $v;
                 continue;
             }
 
-            if ($k == 'customer_id') {
-                if (null == ($customer = filter_var($v, FILTER_VALIDATE_INT, array('options' => array('min_range' => 0))))) {
-                    throw new \BadMethodCallException('Customer: expected positive integer >= 0 got: '.$v);
+            if ($k === 'customer_id') {
+                if (null === ($customer = filter_var($v, FILTER_VALIDATE_INT, array('options' => array('min_range' => 0))))) {
+                    throw new BadMethodCallException('Customer: expected positive integer >= 0 got: '.$v);
                 }
                 $params['customer_id'] = $v;
                 continue;
             }
 
-            if ($k == 'hourly_rates_per_service') {
+            if ($k === 'hourly_rates_per_service') {
                 if (!is_array($v)) {
-                    throw new \BadMethodCallException('Hourly Rates Per Service: expected array with count >= 0 got: '.$v);
+                    throw new BadMethodCallException('Hourly Rates Per Service: expected array with count >= 0 got: '.$v);
                 }
 
                 $params['hourly_rates_per_service'] = $v;
                 continue;
             }
-            if ($k == 'hourly_rate') {
+            if ($k === 'hourly_rate') {
                 if (false === filter_var($v, FILTER_VALIDATE_INT, array('options' => array('min_range' => 0)))) {
-                    throw new \BadMethodCallException('Hourly Rate: expected int >= 0 got: '.$v);
+                    throw new BadMethodCallException('Hourly Rate: expected int >= 0 got: '.$v);
                 }
                 $params['hourly_rate'] = $v;
                 continue;
             }
 
-            if ($k == 'active_hourly_rate') {
-                if (!in_array($v, array('hourly_rate', 'hourly_rate_per_service'))) {
-                    throw new \BadMethodCallException('Active hourly rate: expected one of "hourly_rate", "hourly_rates_per_service" got: '.$v);
+            if ($k === 'active_hourly_rate') {
+                if (!in_array($v, array('hourly_rate', 'hourly_rates_per_service'))) {
+                    throw new BadMethodCallException('Active hourly rate: expected one of "hourly_rate", "hourly_rates_per_service" got: '.$v);
                 }
 
                 $params['active_hourly_rate'] = $v;
@@ -887,7 +891,7 @@ class MiteClient implements MiteInterface
 
             if (in_array($k, array('archived', 'update_hourly_rate_on_time_entries'))) {
                 if (null === ($vv = filter_var($v, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE))) {
-                    throw new \BadMethodCallException($k.': expected value to be one of true or false got: '.$v);
+                    throw new BadMethodCallException($k.': expected value to be one of true or false got: '.$v);
                 }
                 $params[$k] = (false === $vv)? 'false':'true';
                 continue;
@@ -905,15 +909,15 @@ class MiteClient implements MiteInterface
      * @param $id
      *
      * @throws Exceptions\ProjectNotFoundException
-     * @throws \BadMethodCallException
-     * @throws \Exception
+     * @throws BadMethodCallException
+     * @throws Exception
      * @return bool
      * @link http://mite.yo.lk/api/projekte.html
      */
     public function deleteProject($id)
     {
         if (!filter_var($id, FILTER_VALIDATE_INT, array('options' => array('min_range' => 0)))) {
-            throw new \BadMethodCallException('ID must be a positive integer got: '.$id);
+            throw new BadMethodCallException('ID must be a positive integer got: '.$id);
         }
 
         try {
@@ -924,7 +928,7 @@ class MiteClient implements MiteInterface
 
             return $this->callApi($method, $url, $params);
 
-        } catch (\Exception $re) {
+        } catch (Exception $re) {
             if (404 == $re->getCode()) {
                 throw new ProjectNotFoundException('Cannot find entry: '.$id, 404);
             }
@@ -943,7 +947,7 @@ class MiteClient implements MiteInterface
      * @param int    $page page to access, if not used in conjunction with limit a \BadMethodCallException is thrown
      *
      * @return array
-     * @throws \BadMethodCallException
+     * @throws BadMethodCallException
      * @link http://mite.yo.lk/api/leistungen.html
      */
     public function listServices($name = null, $limit = null, $page = null)
@@ -991,12 +995,12 @@ class MiteClient implements MiteInterface
      * @param $name
      *
      * @return array
-     * @throws \BadMethodCallException
+     * @throws BadMethodCallException
      */
     public function searchServices($name)
     {
         if (2 > strlen($name)) {
-            throw new \BadMethodCallException('The search term ust be at least 2 characters long');
+            throw new BadMethodCallException('The search term ust be at least 2 characters long');
         }
 
         $active = $this->listServices($name);
@@ -1012,15 +1016,15 @@ class MiteClient implements MiteInterface
      * @param int $id
      *
      * @throws Exceptions\ServiceNotFoundException
-     * @throws \BadMethodCallException
-     * @throws \Exception
+     * @throws BadMethodCallException
+     * @throws Exception
      * @return array
      * @link http://mite.yo.lk/api/leistungen.html
      */
     public function getService($id)
     {
         if (!filter_var($id, FILTER_VALIDATE_INT, array('options' => array('min_range' => 0)))) {
-            throw new \BadMethodCallException('ID must be a positive integer got: '.$id);
+            throw new BadMethodCallException('ID must be a positive integer got: '.$id);
         }
 
         try {
@@ -1037,7 +1041,7 @@ class MiteClient implements MiteInterface
 
             return $res['service'];
 
-        } catch (\Exception $re) {
+        } catch (Exception $re) {
             if (404 == $re->getCode()) {
                 throw new ServiceNotFoundException('Cannot find entry: '.$id, 404);
             }
@@ -1084,16 +1088,16 @@ class MiteClient implements MiteInterface
      * }
      *
      * @return bool
-     * @throws \BadMethodCallException
-     * @throws \SysEleven\MiteEleven\Exceptions\ServiceNotFoundException
-     * @throws \RuntimeException
-     * @throws \Exception
+     * @throws BadMethodCallException
+     * @throws ServiceNotFoundException
+     * @throws RuntimeException
+     * @throws Exception
      * @link http://mite.yo.lk/api/leistungen.html
      */
     public function updateService($id, array $options = array())
     {
         if (!filter_var($id, FILTER_VALIDATE_INT, array('options' => array('min_range' => 0)))) {
-            throw new \BadMethodCallException('ID must be a positive integer got: '.$id);
+            throw new BadMethodCallException('ID must be a positive integer got: '.$id);
         }
 
         try {
@@ -1104,7 +1108,7 @@ class MiteClient implements MiteInterface
 
             return $res = $this->callApi($method, $url, $params);
 
-        } catch (\Exception $re) {
+        } catch (Exception $re) {
             if (404 == $re->getCode()) {
                 throw new ServiceNotFoundException('Cannot find entry: '.$id, 404);
             }
@@ -1126,7 +1130,7 @@ class MiteClient implements MiteInterface
      * }
      *
      * @return array
-     * @throws \BadMethodCallException
+     * @throws BadMethodCallException
      */
     public function prepareServiceData(array $data = array())
     {
@@ -1142,7 +1146,7 @@ class MiteClient implements MiteInterface
 
             if (in_array($k, array('archived', 'billable','update_hourly_rate_on_time_entries'))) {
                 if (null === ($vv = filter_var($v, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE))) {
-                    throw new \BadMethodCallException(ucfirst($k).': expected true or false got: '.$v);
+                    throw new BadMethodCallException(ucfirst($k).': expected true or false got: '.$v);
                 }
                 $params[$k] = (false === $vv)? 'false':'true';
                 continue;
@@ -1150,7 +1154,7 @@ class MiteClient implements MiteInterface
 
             if ($k == 'hourly_rate') {
                 if (false === filter_var($v, FILTER_VALIDATE_INT, array('options' => array('min_range' => 0)))) {
-                    throw new \BadMethodCallException('Hourly Rate: expected int >= 0 got: '.$v);
+                    throw new BadMethodCallException('Hourly Rate: expected int >= 0 got: '.$v);
                 }
                 $params[$k] = $v;
                 continue;
@@ -1158,7 +1162,7 @@ class MiteClient implements MiteInterface
 
             if ($k == 'name') {
                 if (0 == strlen($v)) {
-                    throw new \BadMethodCallException('Name: You must provide a name for the service');
+                    throw new BadMethodCallException('Name: You must provide a name for the service');
                 }
                 $params[$k] = $v;
                 continue;
@@ -1176,15 +1180,15 @@ class MiteClient implements MiteInterface
      * @param int $id
      *
      * @throws Exceptions\ServiceNotFoundException
-     * @throws \BadMethodCallException
-     * @throws \Exception
+     * @throws BadMethodCallException
+     * @throws Exception
      * @return bool
      * @link http://mite.yo.lk/api/leistungen.html
      */
     public function deleteService($id)
     {
         if (!filter_var($id, FILTER_VALIDATE_INT, array('options' => array('min_range' => 0)))) {
-            throw new \BadMethodCallException('ID must be a positive integer got: '.$id);
+            throw new BadMethodCallException('ID must be a positive integer got: '.$id);
         }
 
         try {
@@ -1195,7 +1199,7 @@ class MiteClient implements MiteInterface
 
             return $this->callApi($method, $url, $params);
 
-        } catch (\Exception $re) {
+        } catch (Exception $re) {
             if (404 == $re->getCode()) {
                 throw new ServiceNotFoundException('Cannot find entry: '.$id, 404);
             }
@@ -1215,7 +1219,7 @@ class MiteClient implements MiteInterface
      * @param int    $page page to access, if not used in conjunction with limit a \BadMethodCallException is thrown
      *
      * @return array
-     * @throws \BadMethodCallException
+     * @throws BadMethodCallException
      * @link http://mite.yo.lk/api/benutzer.html
      */
     public function listUsers(
@@ -1273,14 +1277,14 @@ class MiteClient implements MiteInterface
      * @param string $name
      * @param string $email
      *
-     * @throws \BadMethodCallException
+     * @throws BadMethodCallException
      * @return array
      */
     public function searchUsers($name = null, $email = null)
     {
 
         if (2 > strlen($name) && 2 > strlen($email)) {
-            throw new \BadMethodCallException('The search term ust be at least 2 characters long');
+            throw new BadMethodCallException('The search term ust be at least 2 characters long');
         }
 
         $active = $this->listCustomers($name);
@@ -1295,15 +1299,15 @@ class MiteClient implements MiteInterface
      * @param int $id
      *
      * @throws Exceptions\UserNotFoundException
-     * @throws \BadMethodCallException
-     * @throws \Exception
+     * @throws BadMethodCallException
+     * @throws Exception
      * @return array
      * @link http://mite.yo.lk/api/benutzer.html
      */
     public function getUser($id)
     {
         if (!filter_var($id, FILTER_VALIDATE_INT, array('options' => array('min_range' => 0)))) {
-            throw new \BadMethodCallException('ID must be a positive integer got: '.$id);
+            throw new BadMethodCallException('ID must be a positive integer got: '.$id);
         }
 
         try {
@@ -1320,7 +1324,7 @@ class MiteClient implements MiteInterface
 
             return $res['user'];
 
-        } catch (\Exception $re) {
+        } catch (Exception $re) {
             if (404 == $re->getCode()) {
                 throw new UserNotFoundException('Cannot find entry: '.$id, 404);
             }
@@ -1364,7 +1368,7 @@ class MiteClient implements MiteInterface
      * @param bool  $strict if true an exception is thrown on every unknown value
      *
      * @return array
-     * @throws \BadMethodCallException
+     * @throws BadMethodCallException
      */
     public function prepareTimeEntryGrouping(array $groupBy = array(), $strict = false)
     {
@@ -1375,7 +1379,7 @@ class MiteClient implements MiteInterface
         foreach ($groupBy AS $v) {
             if (!in_array($v, $supported)) {
                 if ($strict) {
-                    throw new \BadMethodCallException('GroupBy: '.$v.': is not supported');
+                    throw new BadMethodCallException('GroupBy: '.$v.': is not supported');
                 }
                 continue;
             }
@@ -1393,7 +1397,7 @@ class MiteClient implements MiteInterface
      * @param bool  $strict if true an exception is thrown on every error or empty value
      *
      * @return array
-     * @throws \BadMethodCallException
+     * @throws BadMethodCallException
      */
     public function prepareTimeEntryFilters(array $filter = array(), $strict = false)
     {
@@ -1404,7 +1408,7 @@ class MiteClient implements MiteInterface
         foreach ($filter AS $k => $v) {
             if(!in_array($k, $supported)) {
                 if ($strict) {
-                    throw new \BadMethodCallException('Filter: '.$k.': is not supported');
+                    throw new BadMethodCallException('Filter: '.$k.': is not supported');
                 }
                 continue;
             }
@@ -1414,7 +1418,7 @@ class MiteClient implements MiteInterface
 
                 if (is_null($vv)) {
                     if ($strict) {
-                        throw new \BadMethodCallException('Filter: billable: '.$v.' is '
+                        throw new BadMethodCallException('Filter: billable: '.$v.' is '
                             . ' not one of true or false or their abbreviations');
                     }
                     continue;
@@ -1426,14 +1430,14 @@ class MiteClient implements MiteInterface
 
             if (is_array($v) && 0 == count($v)) {
                 if ($strict) {
-                    throw new \BadMethodCallException('Filter: '.$k.': no values provided');
+                    throw new BadMethodCallException('Filter: '.$k.': no values provided');
                 }
                 continue;
             }
 
             if (!is_array($v) && 0 == strlen($v)) {
                 if ($strict) {
-                    throw new \BadMethodCallException('Filter: '.$k.': no values provided');
+                    throw new BadMethodCallException('Filter: '.$k.': no values provided');
                 }
                 continue;
             }
@@ -1450,7 +1454,7 @@ class MiteClient implements MiteInterface
 
                     if(count($v) != count($vv)) {
                          if ($strict) {
-                            throw new \BadMethodCallException('Filter: '.$k.': no '
+                            throw new BadMethodCallException('Filter: '.$k.': no '
                                 . 'valid values provided or some of the value are invalid');
                         }
                     }
@@ -1466,7 +1470,7 @@ class MiteClient implements MiteInterface
                 $vv = strtotime($v);
                 if (false === $vv) {
                     if ($strict) {
-                        throw new \BadMethodCallException('Filter: '.$k.': '.$v.' is not a valid date');
+                        throw new BadMethodCallException('Filter: '.$k.': '.$v.' is not a valid date');
                     }
                     continue;
                 }
@@ -1484,7 +1488,7 @@ class MiteClient implements MiteInterface
                 $vv = strtotime($v);
                 if (false === $vv) {
                     if ($strict) {
-                        throw new \BadMethodCallException('Filter: at: '.$v.' is not a valid date or keyword');
+                        throw new BadMethodCallException('Filter: at: '.$v.' is not a valid date or keyword');
                     }
                     continue;
                 }
@@ -1508,17 +1512,17 @@ class MiteClient implements MiteInterface
      * @param int $page
      *
      * @return array
-     * @throws \BadMethodCallException
+     * @throws BadMethodCallException
      */
     public function prepareLimit($limit = null, $page = null)
     {
         $param = array();
         if (!is_null($page) && is_null($limit)) {
-            throw new \BadMethodCallException('Page is only working with limit');
+            throw new BadMethodCallException('Page is only working with limit');
         }
 
         if (!is_null($limit) && !filter_var($limit, FILTER_VALIDATE_INT, array('options' => array('min_range' => 0)))) {
-            throw new \BadMethodCallException('limit must be greater than 0');
+            throw new BadMethodCallException('limit must be greater than 0');
         }
 
         if (!is_null($limit)) {
@@ -1526,7 +1530,7 @@ class MiteClient implements MiteInterface
         }
 
         if (!is_null($page) && !filter_var($page, FILTER_VALIDATE_INT, array('options' => array('min_range' => 0)))) {
-            throw new \BadMethodCallException('page must be greater than 0');
+            throw new BadMethodCallException('page must be greater than 0');
         }
 
         if (!is_null($page)) {
@@ -1545,12 +1549,12 @@ class MiteClient implements MiteInterface
      * @param array  $options
      *
      * @return array|string
-     * @throws \BadMethodCallException
+     * @throws BadMethodCallException
      */
     public function callApi($method, $url, array $parameters = array(), array $options = array())
     {
         if (0 == strlen($url)) {
-            throw new \BadMethodCallException('No Url provided');
+            throw new BadMethodCallException('No Url provided');
         }
 
         $headers = (array_key_exists('headers', $options) && is_array($options['headers']))? $options['headers']:array();
