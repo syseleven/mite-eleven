@@ -54,7 +54,7 @@ Usage
 
     // Setting up the connection
     // Create a rest object with your Mite Url and your API key
-    $rest = new RestClient('https://subdomain.mite.yo.lk','Your_Api_Key');
+    $rest = new RestClient('https://subdomain.mite.de','Your_Api_Key');
 
     // By default the rest client uses \Zend\Http\Client\Adapter\Stream
     // if you want to change it to something else eg. cURL, create an instance
