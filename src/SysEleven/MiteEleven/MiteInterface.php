@@ -41,8 +41,8 @@ interface MiteInterface
      * @param int   $page
      *
      * @return array
-     * @link http://mite.yo.lk/api/gruppierte-zeiten.html
-     * @link http://mite.yo.lk/api/zeiten.html
+     * @link https://mite.de/api/gruppierte-zeiten.html
+     * @link https://mite.de/api/zeiten.html
      */
     public function listEntries(
         array $filter = array(),
@@ -59,7 +59,7 @@ interface MiteInterface
      * @return array
      * @throws \BadMethodCallException
      * @throws \SysEleven\MiteEleven\Exceptions\EntryNotFoundException
-     * @link http://mite.yo.lk/api/zeiten.html
+     * @link https://mite.de/api/zeiten.html
      */
     public function getEntry($id);
 
@@ -78,7 +78,7 @@ interface MiteInterface
      *
      * @return array
      * @throws \SysEleven\MiteEleven\Exceptions\MiteRuntimeException
-     * @link http://mite.yo.lk/api/zeiten.html
+     * @link https://mite.de/api/zeiten.html
      */
     public function createEntry(array $data = array());
 
@@ -101,7 +101,7 @@ interface MiteInterface
      * @throws \BadMethodCallException
      * @throws \RuntimeException
      * @throws \SysEleven\MiteEleven\Exceptions\EntryNotFoundException
-     * @link http://mite.yo.lk/api/zeiten.html
+     * @link https://mite.de/api/zeiten.html
      */
     public function updateEntry($id, array $data = array(), $force = false);
 
@@ -114,7 +114,7 @@ interface MiteInterface
      * @throws \BadMethodCallException
      * @throws \RuntimeException
      * @throws \SysEleven\MiteEleven\Exceptions\EntryNotFoundException
-     * @link http://mite.yo.lk/api/zeiten.html
+     * @link https://mite.de/api/zeiten.html
      */
     public function deleteEntry($id);
 
@@ -127,7 +127,7 @@ interface MiteInterface
      * @param int    $page  page to access, if not used in conjunction with limit a \BadMethodCallException is thrown
      *
      * @return array
-     * @link http://mite.yo.lk/api/kunden.html
+     * @link https://mite.de/api/kunden.html
      */
     public function listCustomers($name = null, $limit = null, $page = null);
 
@@ -140,7 +140,7 @@ interface MiteInterface
      * @param int    $page  page to access, if not used in conjunction with limit a \BadMethodCallException is thrown
      *
      * @return array
-     * @link http://mite.yo.lk/api/kunden.html
+     * @link https://mite.de/api/kunden.html
      */
     public function listArchivedCustomers($name = null, $limit = 0, $page = null);
 
@@ -163,7 +163,7 @@ interface MiteInterface
      *
      * @return array
      * @throws \SysEleven\MiteEleven\Exceptions\CustomerNotFoundException
-     * @link http://mite.yo.lk/api/kunden.html
+     * @link https://mite.de/api/kunden.html
      */
     public function getCustomer($id);
 
@@ -183,7 +183,7 @@ interface MiteInterface
      * @return array
      * @throws \BadMethodCallException
      * @throws \RuntimeException
-     * @link http://mite.yo.lk/api/kunden.html
+     * @link https://mite.de/api/kunden.html
      */
     public function createCustomer($name, array $options = array());
 
@@ -206,7 +206,7 @@ interface MiteInterface
      * @throws \RuntimeException
      * @throws \BadMethodCallException
      * @throws \SysEleven\MiteEleven\Exceptions\CustomerNotFoundException
-     * @link http://mite.yo.lk/api/kunden.html
+     * @link https://mite.de/api/kunden.html
      */
     public function updateCustomer($id, array $options = array());
 
@@ -220,7 +220,7 @@ interface MiteInterface
      * @throws \RuntimeException
      * @throws \BadMethodCallException
      * @throws \SysEleven\MiteEleven\Exceptions\CustomerNotFoundException
-     * @link http://mite.yo.lk/api/kunden.html
+     * @link https://mite.de/api/kunden.html
      */
     public function deleteCustomer($id);
 
@@ -235,7 +235,7 @@ interface MiteInterface
      *
      * @return array
      * @throws \BadMethodCallException
-     * @link http://mite.yo.lk/api/projekte.html
+     * @link https://mite.de/api/projekte.html
      */
     public function listProjects($name = null, $limit = null, $page = null);
 
@@ -249,7 +249,7 @@ interface MiteInterface
      * @param int    $page page to access, if not used in conjunction with limit a \BadMethodCallException is thrown
      *
      * @return array
-     * @link http://mite.yo.lk/api/projekte.html
+     * @link https://mite.de/api/projekte.html
      */
     public function listArchivedProjects($name = null, $limit = null, $page = null);
 
@@ -272,7 +272,7 @@ interface MiteInterface
      * @return array
      * @throws \BadMethodCallException
      * @throws \SysEleven\MiteEleven\Exceptions\ProjectNotFoundException
-     * @link http://mite.yo.lk/api/projekte.html
+     * @link https://mite.de/api/projekte.html
      */
     public function getProject($id);
 
@@ -294,7 +294,7 @@ interface MiteInterface
      *
      * @return mixed
      * @throws \BadMethodCallException
-     * @link http://mite.yo.lk/api/projekte.html
+     * @link https://mite.de/api/projekte.html
      */
     public function createProject($name, array $options = array());
 
@@ -319,7 +319,7 @@ interface MiteInterface
      * @throws \BadMethodCallException
      * @throws \SysEleven\MiteEleven\Exceptions\ProjectNotFoundException
      * @throws \RuntimeException
-     * @link http://mite.yo.lk/api/projekte.html
+     * @link https://mite.de/api/projekte.html
      */
     public function updateProject($id, array $options = array());
 
@@ -331,7 +331,7 @@ interface MiteInterface
      * @return bool
      * @throws \SysEleven\MiteEleven\Exceptions\ProjectNotFoundException
      * @throws \BadMethodCallException
-     * @link http://mite.yo.lk/api/projekte.html
+     * @link https://mite.de/api/projekte.html
      */
     public function deleteProject($id);
 
@@ -346,7 +346,7 @@ interface MiteInterface
      *
      * @return array
      * @throws \BadMethodCallException
-     * @link http://mite.yo.lk/api/leistungen.html
+     * @link https://mite.de/api/leistungen.html
      */
     public function listServices($name = null, $limit = null, $page = null);
 
@@ -360,7 +360,7 @@ interface MiteInterface
      * @param int    $page page to access, if not used in conjunction with limit a \BadMethodCallException is thrown
      *
      * @return array
-     * @link http://mite.yo.lk/api/leistungen.html
+     * @link https://mite.de/api/leistungen.html
      */
     public function listArchivedServices($name = null, $limit = null, $page = null);
 
@@ -372,7 +372,7 @@ interface MiteInterface
      * @return array
      * @throws \BadMethodCallException
      * @throws \SysEleven\MiteEleven\Exceptions\ServiceNotFoundException
-     * @link http://mite.yo.lk/api/leistungen.html
+     * @link https://mite.de/api/leistungen.html
      */
     public function getService($id);
 
@@ -389,7 +389,7 @@ interface MiteInterface
      * }
      *
      * @return array
-     * @link http://mite.yo.lk/api/leistungen.html
+     * @link https://mite.de/api/leistungen.html
      */
     public function createService($name, array $options = array());
 
@@ -410,7 +410,7 @@ interface MiteInterface
      * @throws \BadMethodCallException
      * @throws \SysEleven\MiteEleven\Exceptions\ServiceNotFoundException
      * @throws \RuntimeException
-     * @link http://mite.yo.lk/api/leistungen.html
+     * @link https://mite.de/api/leistungen.html
      */
     public function updateService($id, array $options = array());
 
@@ -423,7 +423,7 @@ interface MiteInterface
      * @throws \BadMethodCallException
      * @throws \SysEleven\MiteEleven\Exceptions\ServiceNotFoundException
      * @throws \RuntimeException
-     * @link http://mite.yo.lk/api/leistungen.html
+     * @link https://mite.de/api/leistungen.html
      */
     public function deleteService($id);
 
@@ -439,7 +439,7 @@ interface MiteInterface
      *
      * @return array
      * @throws \BadMethodCallException
-     * @link http://mite.yo.lk/api/benutzer.html
+     * @link https://mite.de/api/benutzer.html
      */
     public function listUsers($name = null, $email = null, $limit = null, $page = null);
 
@@ -450,7 +450,7 @@ interface MiteInterface
      * @param string $email
      *
      * @return array
-     * @link http://mite.yo.lk/api/benutzer.html
+     * @link https://mite.de/api/benutzer.html
      */
     public function listArchivedUsers($name = '', $email = '');
 
@@ -461,7 +461,7 @@ interface MiteInterface
      *
      * @return array
      * @throws \SysEleven\MiteEleven\Exceptions\UserNotFoundException
-     * @link http://mite.yo.lk/api/benutzer.html
+     * @link https://mite.de/api/benutzer.html
      */
     public function getUser($id);
 
